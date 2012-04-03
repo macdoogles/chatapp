@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org">
+  <head>
+    <title>Angular Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  </head>
+  <body ng:controller="snaps.chatapp.test.PhoneController">    
+<!--     <h1>Add a phone</h1> -->
+<!--     <div>Name: <input type="text" name="phoneName" /></div> -->
+<!--     <div>Snippet: <textarea name="phoneSnippet" rows="2" cols="20"></textarea></div> -->
+<!--     <button ng:onclick="addPhoneSnippet(name, snippet);">Submit</button> -->
+
+    <ul>
+      <li ng:repeat="phone in getPhoneSnippets()">
+        {{phone.name}}
+        <p>{{phone.snippet}}</p>
+      </li>
+    </ul>
+ 
+
+    <script src="http://code.angularjs.org/angular-0.9.19.min.js" ng:autobind></script>
+    <script src="/chatapp/js/jquery/jquery-1.7.2.min.js"></script>
+    <script src="/chatapp/js/snaps/chatapp/test/controller.js"></script>
+  </body>
+</html>

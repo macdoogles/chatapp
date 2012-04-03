@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+  <!-- Change this before deploying. -->
+  <property name="LOG_DIR" value="target/logs" />
+  
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>[%-5level] - %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${LOG_DIR}/web.log</file>
+    <encoder>
+      <pattern>%date %-5level %logger{36} [%file : %line] %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <root level="trace">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
+
