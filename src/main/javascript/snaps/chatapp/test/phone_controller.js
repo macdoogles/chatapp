@@ -1,6 +1,8 @@
-(function(){
+/**
+ * @fileoverview Controller for this weird phone app thing in the angular
+ * tutorial. I'm also experimenting with closure here. 
+ */
 
-goog.provide('snaps.chatapp.test');
 goog.provide('snaps.chatapp.test.PhoneController');
 
 /**
@@ -24,14 +26,16 @@ snaps.chatapp.test.PhoneController.prototype.addPhoneSnippet = function(name, sn
   return this.phones_.push({'name': name, 'snippet': snippet});
 };
 
-// Externs.
-window['snaps.chatapp.test.PhoneController'] = snaps.chatapp.test.PhoneController;
-window['snaps.chatapp.test.PhoneController.getPhoneSnippets'] 
-    = snaps.chatapp.test.PhoneController.getPhoneSnippets;
-window['snaps.chatapp.test.PhoneController.addPhoneSnippet'] 
-    = snaps.chatapp.test.PhoneController.addPhoneSnippet;
-})();
+goog.exportSymbol(
+    'snaps.chatapp.test.PhoneController',
+    snaps.chatapp.test.PhoneController);
 
-function publicpublicpublic() {
-  
-}
+goog.exportProperty(
+    snaps.chatapp.test.PhoneController.prototype,
+    'getPhoneSnippets',
+    snaps.chatapp.test.PhoneController.prototype.getPhoneSnippets);
+
+goog.exportProperty(
+    snaps.chatapp.test.PhoneController.prototype,
+    'addPhoneSnippet',
+    snaps.chatapp.test.PhoneController.prototype.addPhoneSnippet);

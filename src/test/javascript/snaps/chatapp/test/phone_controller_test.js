@@ -1,6 +1,4 @@
 describe('snaps.chatapp.test.PhoneController', function() {
-  goog.require('snaps.chatapp.test.PhoneController');
-
   it('should return "phones" model with 3 phones', function() {
     var controller = new snaps.chatapp.test.PhoneController();
     expect(controller.getPhoneSnippets().length).toBe(3);

@@ -14,8 +14,8 @@
   <version>0.0.3-SNAPSHOT</version>
 
   <description>
-    Simple Angular and AppEngine based web application for
-    chatting or something.
+    Web application for chatting or something, using Angular and a host of
+    other weird frameworks.
   </description>
 
   <properties>
@@ -25,6 +25,10 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <downloadSources>true</downloadSources>
     <downloadJavadocs>true</downloadJavadocs>
+    <jsRootNamespace>snaps.chatapp</jsRootNamespace>
+    <com.google.inject.version>3.0</com.google.inject.version>
+    <com.sun.jersey.version>1.12</com.sun.jersey.version>
+    <org.codehaus.jackson.version>1.9.5</org.codehaus.jackson.version>
   </properties>
 
   <dependencies>
@@ -37,49 +41,49 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <version>3.0</version>
+      <version>${com.google.inject.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-servlet</artifactId>
-      <version>3.0</version>
+      <version>${com.google.inject.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-json</artifactId>
-      <version>1.12</version>
+      <version>${com.sun.jersey.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>1.12</version>
+      <version>${com.sun.jersey.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-guice</artifactId>
-      <version>1.12</version>
+      <version>${com.sun.jersey.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-      <version>1.9.5</version>
+      <version>${org.codehaus.jackson.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-jaxrs</artifactId>
-      <version>1.9.5</version>
+      <version>${org.codehaus.jackson.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.5</version>
+      <version>${org.codehaus.jackson.version}</version>
     </dependency>
 
     <dependency>
@@ -138,10 +142,49 @@
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.12</version>
+        <configuration>
+			    <webAppConfig>
+			      <contextPath>/${project.artifactId}</contextPath>
+			      <baseResource implementation="org.mortbay.resource.ResourceCollection">
+			        <resourcesAsCSV>src/main/webapp,src/main/javascript,lib/main/javascript</resourcesAsCSV>
+			      </baseResource>
+			    </webAppConfig> 
+			  </configuration>
+      </plugin>
+      
+      <plugin>
+        <!-- Javascript compilation with Closure. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <echo message="Compiling javascript files." />
+                <mkdir dir="target/${project.artifactId}" />
+                <exec executable="python" failOnError="true">
+                  <arg value="${basedir}/lib/main/javascript/closure-library/closure/bin/build/closurebuilder.py"/>
+                  <arg value="--root=${basedir}/lib/main/javascript/"/>
+                  <arg value="--root=${basedir}/src/main/javascript/"/>
+                  <arg value="--output_mode=compiled"/>
+                  <arg value="--compiler_jar=${basedir}/lib/main/javascript/closure-compiler/compiler.jar"/>
+                  <arg value="--compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS"/>
+                  <arg value="--compiler_flags=--js_output_file=${basedir}/target/${project.artifactId}/${project.artifactId}.js"/>
+                  <arg value="--namespace=${jsRootNamespace}"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-        <!-- Javscript testing with Jasmine. -->
+        <!--  Javscript unit testing with Jasmine. -->
         <groupId>com.github.searls</groupId>
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>1.1.0</version>
@@ -152,86 +195,20 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      
-      <plugin>
-        <!-- Prepare Closure javascript compiler. -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.google.javascript</groupId>
-                  <artifactId>closure-compiler</artifactId>
-                  <version>r1810</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>closure-compiler.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>args4j</groupId>
-                  <artifactId>args4j</artifactId>
-                  <version>2.0.12</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>args4j.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.google.guava</groupId>
-                  <artifactId>guava</artifactId>
-                  <version>r07</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>guava.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <!-- Run Closure javascript compiler. -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <configuration>
-              <tasks>
-                <echo message="Compiling javascript files." />
-                <mkdir dir="target/${project.artifactId}" />
-                <apply executable="java" failOnError="true">
-                  <arg line="
-                     -cp target/closure/args4j.jar:target/closure/guava.jar:target/closure/closure-compiler.jar
-                     com.google.javascript.jscomp.CommandLineRunner 
-                     --compilation_level=ADVANCED_OPTIMIZATIONS 
-                     --warning_level=QUIET
-                     --charset=UTF-8
-                     --js_output_file=target/${project.artifactId}/${project.artifactId}.js
-                     --js " />
-                  <fileset dir="src/main/javascript">
-                    <include name="**/*.js" />
-                  </fileset>
-                </apply>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
+        <configuration>
+          <jsSrcDir>${basedir}</jsSrcDir>
+	        <sourceIncludes>
+	          <include>lib/main/javascript/closure-library/closure/goog/base.js</include>
+	          <include>lib/main/javascript/underscore/*.js</include>
+					  <include>src/main/javascript/**/*.js</include>
+					</sourceIncludes>
+					<sourceExcludes>
+					 <exclude>lib/main/javascript/closure-compiler/**</exclude>
+					 <exclude>src/main/javascript/snaps/chatapp/main.js</exclude>
+					</sourceExcludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 </project>
+
