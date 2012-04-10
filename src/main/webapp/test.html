@@ -4,7 +4,7 @@
     <title>Angular Test</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   </head>
-  <body ng:controller="snaps.chatapp.test.PhoneController">    
+  <body ng:controller="snaps.chatapp.sandbox.PhoneController">    
 <!--     <h1>Add a phone</h1> -->
 <!--     <div>Name: <input type="text" name="phoneName" /></div> -->
 <!--     <div>Snippet: <textarea name="phoneSnippet" rows="2" cols="20"></textarea></div> -->
@@ -16,9 +16,26 @@
         <p>{{phone.snippet}}</p>
       </li>
     </ul>
+    
+    
+    <button id="showButton">Show More</button>
+    
+    <div id="moreBox" style="display:none">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dui nisl, rhoncus pellentesque fermentum quis, commodo eget enim. Pellentesque orci diam, tincidunt non sagittis non, convallis eu diam. Aliquam aliquam, purus vel tincidunt tempor, ligula nibh laoreet felis, sit amet consequat nibh lectus eu ipsum. Nunc lacinia pulvinar sem, id sollicitudin eros pulvinar non. Donec malesuada convallis lacus, ut tempor sapien tincidunt molestie. Curabitur dignissim facilisis bibendum. Maecenas diam arcu, adipiscing vel euismod sit amet, condimentum in velit. Curabitur euismod placerat leo, vitae ornare libero varius a. Sed ornare eleifend lacus, ac pulvinar ante ornare nec. Etiam nec purus vitae felis convallis scelerisque. Aenean diam dolor, tempus at dictum vitae, tristique vel erat. Vestibulum volutpat suscipit dui sit amet vehicula. Aliquam consequat ligula aliquam lacus feugiat mattis. Ut erat augue, dictum a hendrerit tincidunt, laoreet a ipsum. Mauris eget libero a magna tempor accumsan. Curabitur pellentesque quam vel ipsum facilisis condimentum.
 
+Etiam eget ipsum sapien. Aliquam eget magna eget leo aliquet commodo eu nec urna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam a justo et diam lacinia semper. Nulla turpis orci, dapibus ac pharetra vitae, consectetur et arcu. Nulla ultricies sem in sapien adipiscing eleifend. Ut augue erat, hendrerit sed ultrices eget, imperdiet volutpat nisl. Curabitur ut lectus nisl. Morbi elit felis, sagittis vitae posuere id, aliquam nec arcu. Curabitur varius aliquet malesuada. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec sagittis felis ac quam dapibus eu pretium nibh interdum.
+
+Aenean ac nibh nec metus accumsan sodales et non sem. Curabitur dapibus eros facilisis mauris interdum volutpat. Donec eu nisi id orci imperdiet ultrices. Vivamus mattis fringilla felis at commodo. Nunc quis ligula lectus. Fusce ultrices fringilla semper. Nulla ac dui eu justo ornare tincidunt. Aenean porttitor, felis a pellentesque scelerisque, metus urna posuere ante, vel dapibus leo massa vestibulum risus. Curabitur sit amet erat sapien, et adipiscing quam. Aenean id risus eu lacus molestie consectetur ac in diam. Quisque ultricies tellus sit amet sapien ultrices dapibus vitae et erat.
+
+Curabitur vulputate orci sed diam pulvinar non aliquet urna tempus. Curabitur eu malesuada massa. Integer viverra volutpat risus, aliquet iaculis nisl vulputate in. Sed non mauris eu est semper congue. In non pretium risus. Cras euismod condimentum molestie. Duis iaculis vehicula lacinia. Donec congue sapien at tellus vulputate ut vehicula dolor facilisis. Mauris mi orci, elementum sit amet varius et, ullamcorper vitae lectus. Cras dictum erat a neque dictum vitae viverra sapien malesuada. Proin blandit dolor sem, sed scelerisque turpis. Nulla lobortis, ipsum malesuada cursus volutpat, mi est laoreet dui, nec feugiat orci nibh sed velit.
+
+Morbi laoreet nisl sed elit faucibus eget suscipit nibh fringilla. Suspendisse eget sem ut quam luctus adipiscing nec et augue. Curabitur vitae fermentum massa. Duis convallis adipiscing arcu, a hendrerit ante mollis et. Donec hendrerit egestas mi, id rhoncus purus porttitor eu. Quisque bibendum bibendum tortor, at bibendum lorem porttitor non. Mauris quis velit ipsum.
+    </div>
+
+    <script src="/chatapp/goog/base.js"></script>
     <script src="http://code.angularjs.org/angular-0.9.19.min.js" ng:autobind></script>
-    <script src="/chatapp/closure-library/closure/goog/base.js"></script>
-    <script src="/chatapp/snaps/chatapp/test/phone_controller.js"></script>
+    <script src="/chatapp/jquery/jquery-1.7.2.js"></script>
+    <script src="/chatapp/snaps/chatapp/sandbox/phone_controller.js"></script>
+    <script src="/chatapp/snaps/chatapp/sandbox/phone_widgets.js"></script>
   </body>
 </html>
