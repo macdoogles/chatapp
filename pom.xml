@@ -143,58 +143,13 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.12</version>
         <configuration>
-			    <webAppConfig>
-			      <contextPath>/${project.artifactId}</contextPath>
-			      <baseResource implementation="org.mortbay.resource.ResourceCollection">
-			        <resourcesAsCSV>src/main/webapp,src/main/javascript,lib/main/javascript</resourcesAsCSV>
-			      </baseResource>
-			    </webAppConfig> 
-			  </configuration>
-      </plugin>
-
-      <plugin>
-        <!-- Prepare Closure javascript compiler. -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.google.javascript</groupId>
-                  <artifactId>closure-compiler</artifactId>
-                  <version>r1810</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>closure-compiler.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>args4j</groupId>
-                  <artifactId>args4j</artifactId>
-                  <version>2.0.12</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>args4j.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.google.guava</groupId>
-                  <artifactId>guava</artifactId>
-                  <version>r07</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>target/closure</outputDirectory>
-                  <destFileName>guava.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
+          <webAppConfig>
+            <contextPath>/${project.artifactId}</contextPath>
+            <baseResource implementation="org.mortbay.resource.ResourceCollection">
+              <resourcesAsCSV>src/main/webapp,src/main/javascript</resourcesAsCSV>
+            </baseResource>
+          </webAppConfig>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -208,37 +163,46 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-               <mkdir dir="${basedir}/target/${project.artifactId}" />
-                <echo message="Compiling javascript files." />
-								
-								<fileset id="srcjs" dir="${basedir}/src/main/javascript">
-								  <!-- For the moment manually specify as order is important -->
-								  <!-- TODO: Use goog.requires for 3plib too. -->
-								  <!-- exclude name="goog/base.js" />
-								  <exclude name="**/*.extern.js" />
-								  <include name="**/*.js" / -->
-								  <include name="goog/export.js" />
-								  <include name="jquery/jquery-1.7.2.js" />
-								  <include name="underscore/underscore-1.3.2.js" />
-								  <include name="snaps/chatapp/main.js" />
-								  <include name="snaps/chatapp/sandbox/algorithms.js " />
-								  <include name="snaps/chatapp/sandbox/phone_controller.js" />
-								  <include name="snaps/chatapp/sandbox/phone_widgets.js" />
-								</fileset>
-                <pathconvert pathsep="  " property="jsfiles" refid="srcjs" />
-                <echo message="jsfiles = ${jsfiles}" />
+                <mkdir dir="${basedir}/target/${project.artifactId}" />
+                <echo>Compiling javascript files.</echo>
+
+                <fileset id="srcjs" dir="${basedir}/src/main/javascript">
+                  <include name="**/*.js" />
+
+                  <!-- deps.js is not needed with compiled code in production.     -->
+                  <exclude name="deps.js" />
+
+                  <!-- The production compiled code does not use google's base.js. -->
+                  <exclude name="goog/goog.js" />
                 
+                  <!-- require.js just defines goog.provide and goog.require which -->
+                  <!-- are auto-magical values not needed in the production code.  -->
+                  <exclude name="goog/require.js" />
+                
+                  <!-- Externs should be specified with extern flag                -->
+                  <exclude name="**/*.extern.js" />
+                </fileset>
+                <pathconvert pathsep="  " property="jsfiles" refid="srcjs" />
+
                 <exec executable="java" failOnError="true">
                   <arg value="-jar" />
-                  <arg value="${basedir}/src/main/javascript/goog/compiler.jar" />
+                  <arg value="${basedir}/closure/compiler.jar" />
                   <arg value="--compilation_level=SIMPLE_OPTIMIZATIONS" />
-									<arg value="--charset=UTF-8" />
-									<arg value="--manage_closure_dependencies" />
-									<arg value="--generate_exports" />
-									<arg value="--warning_level=QUIET" />
-									<arg value="--js_output_file=${basedir}/target/${project.artifactId}/${project.artifactId}.js" />
-									<arg value="--js" />
+                  <arg value="--charset=UTF-8" />
+                  <arg value="--manage_closure_dependencies" />
+                  <arg value="--generate_exports" />
+                  <arg value="--warning_level=QUIET" />
+                  <arg value="--js_output_file=${basedir}/target/${project.artifactId}/${project.artifactId}.js" />
+                  <arg value="--js" />
                   <arg line="${jsfiles}" />
+                </exec>
+
+                <echo>Creating src/main/javascript/deps.js.</echo>
+                <!-- deps.js is needed when running uncompiled source in jetty. -->
+                <exec executable="python" failOnError="true">
+                  <arg value="closure/depswriter.py" />
+                  <arg value="--root=src/main/javascript" />
+                  <arg value="--output=src/main/javascript/deps.js" />
                 </exec>
               </tasks>
             </configuration>
@@ -262,14 +226,16 @@
           </execution>
         </executions>
         <configuration>
-          <jsSrcDir>${basedir}</jsSrcDir>
-	        <sourceIncludes>
-					  <include>src/main/javascript/**/*.js</include>
-					</sourceIncludes>
-					<sourceExcludes>
-					 <exclude>src/main/javascript/goog/export.js</exclude>
-					 <exclude>src/main/javascript/snaps/chatapp/main.js</exclude>
-					</sourceExcludes>
+          <jsSrcDir>${basedir}/src/main/javascript</jsSrcDir>
+          <sourceExcludes>
+            <exclude>deps.js</exclude>
+            <exclude>goog/goog.js</exclude>
+          </sourceExcludes>
+          <sourceIncludes>
+            <include>goog/require.js</include>
+            <include>goog/export.js</include>
+            <include>**/*.js</include>
+          </sourceIncludes>
         </configuration>
       </plugin>
     </plugins>

@@ -1,5 +1,7 @@
 goog.provide('snaps.chatapp.sandbox.algorithms');
 
+goog.require('underscore');
+
 snaps.chatapp.sandbox.algorithms.fibonacci = function(n) {
   if (n == 0) {
     return 0;

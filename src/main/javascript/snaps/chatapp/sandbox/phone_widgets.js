@@ -1,5 +1,7 @@
 goog.provide('snaps.chatapp.sandbox.widgets');
 
+goog.require('jquery');
+
 snaps.chatapp.sandbox.widgets.toggleShowMore = function() {
   $('#moreBox').toggle('slow');
 }

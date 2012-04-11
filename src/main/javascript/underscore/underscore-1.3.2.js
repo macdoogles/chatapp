@@ -1,3 +1,5 @@
+goog.provide('underscore');
+
 //     Underscore.js 1.3.2
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore is freely distributable under the MIT license.

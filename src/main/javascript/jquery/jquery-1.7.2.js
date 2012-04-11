@@ -1,3 +1,5 @@
+goog.provide('jquery');
+
 /*!
  * jQuery JavaScript Library v1.7.2
  * http://jquery.com/
@@ -13,6 +15,7 @@
  *
  * Date: Wed Mar 21 12:46:34 2012 -0700
  */
+
 (function( window, undefined ) {
 
 // Use the correct document accordingly with window argument (sandbox)

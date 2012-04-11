@@ -17,6 +17,10 @@ var goog = goog || {}; // Identifies this file as the Closure base.
  */
 goog.global = this;
 
+goog.addDependency = function() {
+  // pass
+}
+
 /**
  * Exposes an unobfuscated global namespace path for the given object.
  * Note that fields of the exported object *will* be obfuscated,
