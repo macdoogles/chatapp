@@ -11,6 +11,6 @@
  * -- Most of the files in goog/ have special purposes. Don't mess with them.
  */
 
-goog.require('snaps.chatapp.sandbox.algorithms');
-goog.require('snaps.chatapp.sandbox.PhoneController');
-goog.require('snaps.chatapp.sandbox.widgets');
+goog.require('acme.sandbox.algorithms');
+goog.require('acme.sandbox.PhoneController');
+goog.require('acme.sandbox.widgets');

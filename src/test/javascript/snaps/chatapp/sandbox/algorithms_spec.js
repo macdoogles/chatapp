@@ -2,10 +2,10 @@ describe('algorithms', function(){
   var fibonacci, power, bubbleSort;
 
   beforeEach(function () {
-    ns = snaps.chatapp.sandbox.algorithms;
-    fibonacci = snaps.chatapp.sandbox.algorithms.fibonacci;
-    power = snaps.chatapp.sandbox.algorithms.power;
-    bubbleSort = snaps.chatapp.sandbox.algorithms.bubbleSort;
+    ns = acme.sandbox.algorithms;
+    fibonacci = acme.sandbox.algorithms.fibonacci;
+    power = acme.sandbox.algorithms.power;
+    bubbleSort = acme.sandbox.algorithms.bubbleSort;
   });
 
   describe('Fibonacci', function() {

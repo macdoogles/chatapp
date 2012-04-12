@@ -1,11 +1,11 @@
-describe('snaps.chatapp.sandbox.PhoneController', function() {
+describe('acme.sandbox.PhoneController', function() {
   it('should return "phones" model with 3 phones', function() {
-    var controller = new snaps.chatapp.sandbox.PhoneController();
+    var controller = new acme.sandbox.PhoneController();
     expect(controller.getPhoneSnippets().length).toBe(3);
   });    
 
   it('should add a phone', function() {
-    var controller = new snaps.chatapp.sandbox.PhoneController();
+    var controller = new acme.sandbox.PhoneController();
     controller.addPhoneSnippet(
         'Nexus Galaxy S',
         'Don\'t break the display like I did.');

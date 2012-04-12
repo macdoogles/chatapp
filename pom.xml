@@ -25,7 +25,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <downloadSources>true</downloadSources>
     <downloadJavadocs>true</downloadJavadocs>
-    <jsRootNamespace>snaps.chatapp</jsRootNamespace>
     <com.google.inject.version>3.0</com.google.inject.version>
     <com.sun.jersey.version>1.12</com.sun.jersey.version>
     <org.codehaus.jackson.version>1.9.5</org.codehaus.jackson.version>
@@ -234,6 +233,8 @@
           <sourceIncludes>
             <include>goog/require.js</include>
             <include>goog/export.js</include>
+            <include>jquery/*.js</include>
+            <include>underscore/*.js</include>
             <include>**/*.js</include>
           </sourceIncludes>
         </configuration>
