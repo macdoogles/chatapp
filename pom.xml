@@ -145,69 +145,123 @@
           <webAppConfig>
             <contextPath>/${project.artifactId}</contextPath>
             <baseResource implementation="org.mortbay.resource.ResourceCollection">
-              <resourcesAsCSV>src/main/webapp,src/main/javascript</resourcesAsCSV>
+              <resourcesAsCSV>
+                src/test/javascript,src/main/webapp,src/main/javascript,target/generated-sources/javascript
+              </resourcesAsCSV>
             </baseResource>
           </webAppConfig>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <!-- We cannot cache-bust after files are copied but before war. -->
+              <directory>target/generated-sources/webapp</directory>
+              <directory>src/main/webapp</directory>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
 
       <plugin>
-        <!-- Run Closure javascript compiler. -->
-        <!-- TODO: Use externs and ADVANCED_OPTIMIZATIONS when Angular supports it. -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.4</version>
         <executions>
           <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks>
+                <!-- deps.js is needed when running uncompiled source in jetty. -->
+                <echo>Creating target/generated-sources/javascript/deps.js.</echo>
+                <mkdir dir="${basedir}/target/generated-sources/javascript" />
+                <exec executable="python" failOnError="true">
+                  <arg value="${basedir}/build/closure/depswriter.py" />
+                  <arg value="--root=src/main/javascript" />
+                  <arg value="--output=${basedir}/target/generated-sources/javascript/deps.js" />
+                </exec>
+              </tasks>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
+
+          <execution>
+            <id>compile</id>
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <mkdir dir="${basedir}/target/${project.artifactId}" />
+                <!-- Run Closure javascript compiler. -->
+                <mkdir dir="${basedir}/target/javascript" />
                 <echo>Compiling javascript files.</echo>
 
                 <fileset id="srcjs" dir="${basedir}/src/main/javascript">
                   <include name="**/*.js" />
-
-                  <!-- deps.js is not needed with compiled code in production.     -->
-                  <exclude name="deps.js" />
-
-                  <!-- The production compiled code does not use google's base.js. -->
-                  <exclude name="goog/goog.js" />
-                
-                  <!-- require.js just defines goog.provide and goog.require which -->
-                  <!-- are auto-magical values not needed in the production code.  -->
-                  <exclude name="goog/require.js" />
-                
-                  <!-- Externs should be specified with extern flag                -->
-                  <exclude name="**/*.extern.js" />
+                  <exclude name="**/*.externs.js" />
                 </fileset>
                 <pathconvert pathsep="  " property="jsfiles" refid="srcjs" />
 
                 <exec executable="java" failOnError="true">
                   <arg value="-jar" />
-                  <arg value="${basedir}/closure/compiler.jar" />
+                  <arg value="${basedir}/build/closure/compiler.jar" />
                   <arg value="--compilation_level=SIMPLE_OPTIMIZATIONS" />
                   <arg value="--charset=UTF-8" />
                   <arg value="--manage_closure_dependencies" />
                   <arg value="--generate_exports" />
                   <arg value="--warning_level=QUIET" />
-                  <arg value="--js_output_file=${basedir}/target/${project.artifactId}/${project.artifactId}.js" />
-                  <arg value="--js" />
-                  <arg line="${jsfiles}" />
-                </exec>
-
-                <echo>Creating src/main/javascript/deps.js.</echo>
-                <!-- deps.js is needed when running uncompiled source in jetty. -->
-                <exec executable="python" failOnError="true">
-                  <arg value="closure/depswriter.py" />
-                  <arg value="--root=src/main/javascript" />
-                  <arg value="--output=src/main/javascript/deps.js" />
+                  <arg value="--js_output_file=${basedir}/target/javascript/${project.artifactId}.js" />
+                  <arg line="--js ${jsfiles}" />
                 </exec>
               </tasks>
             </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
+            <goals><goal>run</goal></goals>
+          </execution>
+
+          <execution>
+            <id>prepare-package</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <tasks>
+                <!-- Copy compiled javascript into war folder. -->
+                <copy todir="${basedir}/target/${project.artifactId}">
+                  <fileset dir="${basedir}/target/javascript">
+                    <include name="*" />
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
+          
+          <execution>
+            <id>package</id>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <!-- Cache bust static files by appending the checksum in the src tags. -->
+                <!-- Doing this means the browser will cache by version.                -->
+                <mkdir dir="${basedir}/target/cachebusted" />
+                <exec executable="python" failOnError="true">
+                  <arg value="${basedir}/build/cache_busting.py" />
+                  <arg value="--context=${project.artifactId}" />
+                  <arg value="--html_output_directory=${basedir}/target/cachebusted" />
+                </exec>
+                
+                <!-- Yeah pretty ridiculous but since we cannot hook on to -->
+                <!-- some point after the war directory is created but     -->
+                <!-- before the actual .war file is made, we need to       -->
+                <!-- update the existing war file with the new files.      -->
+                <war destfile="${basedir}/target/${project.artifactId}.war" update="true">
+                  <zipfileset dir="${basedir}/target/cachebusted" />
+                </war>
+              </tasks>
+            </configuration>
+            <goals><goal>run</goal></goals>
           </execution>
         </executions>
       </plugin>
@@ -218,24 +272,24 @@
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>1.1.0</version>
         <executions>
-          <execution>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
+          <execution><goals><goal>test</goal></goals></execution>
         </executions>
         <configuration>
-          <jsSrcDir>${basedir}/src/main/javascript</jsSrcDir>
-          <sourceExcludes>
-            <exclude>deps.js</exclude>
-            <exclude>goog/goog.js</exclude>
-          </sourceExcludes>
+          <jsSrcDir>${basedir}</jsSrcDir>
+          <specIncludes>
+            <include>**/*_spec.js</include>
+          </specIncludes>
           <sourceIncludes>
-            <include>goog/require.js</include>
-            <include>goog/export.js</include>
-            <include>jquery/*.js</include>
-            <include>underscore/*.js</include>
-            <include>**/*.js</include>
+            <!-- require.js needed so jasmine doesn't choke on magical -->
+            <!-- closure compiler calls.                               -->
+            <include>src/test/javascript/require.js</include>
+
+            <!-- Unfortunately we need to specify deps in order.       -->
+            <include>src/test/javascript/angular-0.9.19.js</include>
+            <include>src/main/javascript/jquery/*.js</include>
+            <include>src/main/javascript/underscore/*.js</include>
+
+            <include>src/main/javascript/**/*.js</include>
           </sourceIncludes>
         </configuration>
       </plugin>

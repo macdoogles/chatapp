@@ -1,5 +1,5 @@
 describe('acme.sandbox.PhoneController', function() {
-  it('should return "phones" model with 3 phones', function() {
+  it('should initialize with with 3 phones', function() {
     var controller = new acme.sandbox.PhoneController();
     expect(controller.getPhoneSnippets().length).toBe(3);
   });    

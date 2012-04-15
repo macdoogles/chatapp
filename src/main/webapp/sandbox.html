@@ -1,0 +1,37 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org">
+  <head>
+    <title>Angular Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  </head>
+  <body ng:controller="acme.sandbox.PhoneController">    
+	  <ul class="controls">
+	    <li>
+	      Search: <input type="text" name="query"/>
+	    </li>
+	    <li>
+	      Sort by:
+	      <select name="orderProp">
+	        <option value="name">Alphabetical</option>
+	        <option value="snippet">Snippet</option>
+	      </select>
+	    </li>
+	  </ul>
+
+    <ul class="phones">
+      <li ng:repeat="phone in phones.$filter(query).$orderBy(orderProp)">
+        {{phone.name}}
+        <p>{{phone.snippet}}</p>
+      </li>
+    </ul>
+    
+    <button id="showButton">Test JQuery</button>
+    
+    <div id="moreBox" style="display:none">
+      JQuery works.
+    </div>
+
+    <script type="text/javascript" src="angular.js" ng:autobind></script>
+    <script type="text/javascript" src="chatapp.js"></script>
+  </body>
+</html>
