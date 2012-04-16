@@ -1,7 +1,7 @@
 describe('phone app', function() {
   describe('phone list view', function() {
     beforeEach(function() {
-      browser().navigateTo('test.html');
+      browser().navigateTo('/chatapp/sandbox.html');
     });
 
     it('should filter the phone list as user types into the search box', function() {
