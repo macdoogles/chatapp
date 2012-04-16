@@ -8,14 +8,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>chatapp</artifactId>
-  <groupId>com.snaps</groupId>
+  <groupId>com.acme</groupId>
   <name>chatapp</name>
   <packaging>war</packaging>
   <version>0.0.3-SNAPSHOT</version>
 
   <description>
     Web application for chatting or something, using Angular and a host of
-    other weird frameworks.
+    other weird frameworks. See the README for more info.
   </description>
 
   <properties>
@@ -66,6 +66,12 @@
       <artifactId>jersey-guice</artifactId>
       <version>${com.sun.jersey.version}</version>
     </dependency>
+    
+    <dependency>
+		  <groupId>commons-lang</groupId>
+		  <artifactId>commons-lang</artifactId>
+		  <version>2.6</version>
+		</dependency>
 
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -286,6 +292,7 @@
 
             <!-- Unfortunately we need to specify deps in order.       -->
             <include>src/test/javascript/angular-0.9.19.js</include>
+            <include>src/test/javascript/angular-mocks-0.9.19.js</include>
             <include>src/main/javascript/jquery/*.js</include>
             <include>src/main/javascript/underscore/*.js</include>
 

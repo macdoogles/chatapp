@@ -1,12 +1,12 @@
-package com.snaps.chatapp.server;
+package com.acme.chatapp.server;
 
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+import com.acme.chatapp.sandbox.PhoneResource;
 import com.google.inject.servlet.ServletModule;
-import com.snaps.chatapp.test.TestResource;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 public class ServerModule extends ServletModule {
@@ -17,7 +17,7 @@ public class ServerModule extends ServletModule {
     bind(MessageBodyWriter.class).to(JacksonJsonProvider.class);
 
     // Bind REST resources.
-    bind(TestResource.class);
+    bind(PhoneResource.class);
 
     // The JSON REST API is available starting at /rest/*.
     serve("/rest/*").with(GuiceContainer.class);

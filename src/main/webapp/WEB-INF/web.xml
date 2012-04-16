@@ -7,7 +7,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
         http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   <listener>
-    <listener-class>com.snaps.chatapp.server.GuiceListener</listener-class>
+    <listener-class>com.acme.chatapp.server.GuiceListener</listener-class>
   </listener>
 
   <filter>

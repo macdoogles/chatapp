@@ -1,4 +1,4 @@
-package com.snaps.chatapp.server;
+package com.acme.chatapp.server;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
