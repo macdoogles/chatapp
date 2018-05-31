@@ -8,7 +8,7 @@ Javascript MVC framework.
 * Closure Compiler (https://developers.google.com/closure/compiler/)
 Compiles javascript to javascript... Yeah as crazy as it sounds.
 
-* Jasmine (http://pivotal.github.com/jasmine/)
+* Jasmine (https://jasmine.github.io/)
 BDD testing framework for javascript.
  
 * JQuery (http://jquery.com)
